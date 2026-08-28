@@ -4,7 +4,7 @@
  * Description: Drag and drop page builder, Atomic Editor, pixel perfect design, global and reusable style systems, and mobile responsive editing. A privately maintained build of Elementor with the upsell, telemetry and remote-API surface removed.
  * Plugin URI: https://github.com/jodukkan-max/elementor-dukkan
  * Update URI: https://github.com/jodukkan-max/elementor-dukkan
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: jodukkan-max
  * Author URI: https://github.com/jodukkan-max
  * Requires PHP: 7.4
@@ -43,7 +43,7 @@ define( 'ELEMENTOR_VERSION', '4.1.1' );
  * checks keep their current answers and the upgrade manager never fires a DB migration.
  * Keep this in sync with the `Version:` header above.
  */
-define( 'ELEMENTOR_DUKKAN_VERSION', '1.0.1' );
+define( 'ELEMENTOR_DUKKAN_VERSION', '1.0.2' );
 
 define( 'ELEMENTOR__FILE__', __FILE__ );
 define( 'ELEMENTOR_PLUGIN_BASE', plugin_basename( ELEMENTOR__FILE__ ) );

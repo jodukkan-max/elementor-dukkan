@@ -264,7 +264,7 @@ abstract class Widget_Contact_Button_Base extends Widget_Base {
 	}
 
 	public function get_categories(): array {
-		return [ 'general' ];
+		return [ 'basic' ];
 	}
 
 	protected function register_controls(): void {

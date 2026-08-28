@@ -103,7 +103,10 @@ abstract class Widget_Base extends Element_Base {
 	 * @return array Widget categories.
 	 */
 	public function get_categories() {
-		return [ 'general' ];
+		// This is the default category. Most widgets rely on it, so pointing it at `basic`
+		// moves the entire General tab into Basic. The General category is left empty and
+		// hides itself (categories default to hideIfEmpty).
+		return [ 'basic' ];
 	}
 
 	/**
