@@ -118,7 +118,9 @@ class Container extends Element_Base {
 		$config['controls'] = $this->get_controls();
 		$config['tabs_controls'] = $this->get_tabs_controls();
 		$config['show_in_panel'] = true;
-		$config['categories'] = [ 'layout' ];
+		// Elements are merged ahead of widgets in Document::get_config(), and the `basic`
+		// category declares no `sort`, so Container renders first in the tab.
+		$config['categories'] = [ 'basic' ];
 		$config['include_in_widgets_config'] = true;
 
 		return $config;
