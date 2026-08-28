@@ -1,0 +1,12 @@
+.DS_Store
+Thumbs.db
+
+# Release artifacts are built by .github/workflows/release.yml, never committed.
+*.zip
+build/
+
+node_modules/
+vendor/bin/
+.idea/
+.vscode/
+*.log

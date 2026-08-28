@@ -1,0 +1,59 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify tag matches the plugin header version
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          HEADER=$(grep -m1 '^ \* Version:' elementor.php | sed 's/.*Version:[[:space:]]*//' | tr -d '[:space:]')
+          echo "tag=$TAG header=$HEADER"
+          if [ "$TAG" != "$HEADER" ]; then
+            echo "::error::Tag $TAG does not match the Version: header ($HEADER) in elementor.php."
+            echo "Bump the header and the ELEMENTOR_DUKKAN_VERSION constant, then retag."
+            exit 1
+          fi
+
+      # The zip must contain a single top-level `elementor/` directory. WordPress installs
+      # the update into whatever directory the archive unpacks to, so any other name would
+      # move the plugin and deactivate it mid-update.
+      - name: Build plugin zip
+        run: |
+          mkdir -p build/elementor
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='build' \
+            --exclude='.gitignore' \
+            --exclude='README.md' \
+            ./ build/elementor/
+          cd build && zip -r -q -X ../elementor.zip elementor
+
+      - name: Verify archive layout
+        run: |
+          TOP=$(unzip -Z1 elementor.zip | cut -d/ -f1 | sort -u)
+          echo "top-level entries: $TOP"
+          if [ "$TOP" != "elementor" ]; then
+            echo "::error::Archive must contain exactly one top-level directory named 'elementor'."
+            exit 1
+          fi
+          unzip -l elementor.zip | grep -q 'elementor/elementor.php' || {
+            echo "::error::elementor/elementor.php missing from the archive."
+            exit 1
+          }
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: elementor.zip
+          generate_release_notes: true
