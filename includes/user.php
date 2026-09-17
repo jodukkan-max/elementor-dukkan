@@ -39,15 +39,6 @@ class User {
 	const BETA_TESTER_META_KEY = 'elementor_beta_tester';
 
 	/**
-	 * Holds the URL of the Beta Tester Opt-in API.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var string API URL.
-	 */
-	const BETA_TESTER_API_URL = 'https://my.elementor.com/api/v1/beta_tester/';
-
-	/**
 	 * Holds the dismissed editor notices key.
 	 *
 	 * @since 3.19.0
@@ -319,25 +310,9 @@ class User {
 		}
 
 		update_user_meta( get_current_user_id(), self::BETA_TESTER_META_KEY, true );
-		$response = wp_safe_remote_post(
-			self::BETA_TESTER_API_URL,
-			[
-				'timeout' => 25,
-				'body' => [
-					'api_version' => ELEMENTOR_VERSION,
-					'site_lang' => get_bloginfo( 'language' ),
-					'beta_tester_email' => $data['betaTesterEmail'],
-				],
-			]
-		);
 
-		$response_code = (int) wp_remote_retrieve_response_code( $response );
-
-		if ( 200 === $response_code ) {
-			self::set_introduction_viewed( [
-				'introductionKey' => Beta_Testers::BETA_TESTER_SIGNUP,
-			] );
-		}
+		// Beta tester signup POST to my.elementor.com/api/v1/beta_tester/ removed for
+		// this fork. The Beta Testers feature (and its toggle) is disabled elsewhere.
 	}
 
 	/**

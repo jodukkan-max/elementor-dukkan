@@ -19,18 +19,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Tracker {
 
-	/**
-	 * API URL.
-	 *
-	 * Holds the URL of the Tracker API.
-	 *
-	 * @since 1.0.0
-	 * @access private
-	 *
-	 * @var string API URL.
-	 */
-	private static $api_url = 'https://my.elementor.com/api/v1/tracker/';
-
 	private static $notice_shown = false;
 
 	const LAST_TERMS_UPDATED = '2025-07-07';
@@ -45,7 +33,10 @@ class Tracker {
 	 * @static
 	 */
 	public static function init() {
-		add_action( 'elementor/tracker/send_event', [ __CLASS__, 'send_tracking_data' ] );
+		// The daily 'elementor/tracker/send_event' cron hook registration was removed for
+		// this fork. send_tracking_data() remains (called directly by set_opt_in() and
+		// Custom_Tasks) but is a no-op since is_allow_track() is permanently false.
+
 		add_action( 'admin_init', [ __CLASS__, 'handle_tracker_actions' ] );
 
 		add_action( 'update_option_elementor_allow_tracking', [ __CLASS__, 'set_last_update_time' ] );
@@ -103,65 +94,10 @@ class Tracker {
 			return;
 		}
 
-		$last_send = self::get_last_send_time();
-
-		/**
-		 * Tracker override send.
-		 *
-		 * Filters whether to override sending tracking data or not.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param bool $override Whether to override default setting or not.
-		 */
-		$override = apply_filters( 'elementor/tracker/send_override', $override );
-
-		if ( ! $override ) {
-			$last_send_interval = strtotime( '-1 week' );
-
-			/**
-			 * Tracker last send interval.
-			 *
-			 * Filters the interval of between two tracking requests.
-			 *
-			 * @since 1.0.0
-			 *
-			 * @param int $last_send_interval A date/time string. Default is `strtotime( '-1 week' )`.
-			 */
-			$last_send_interval = apply_filters( 'elementor/tracker/last_send_interval', $last_send_interval );
-
-			// Send a maximum of once per week by default.
-			if ( $last_send && $last_send > $last_send_interval ) {
-				return;
-			}
-		} elseif ( $last_send && $last_send > strtotime( '-1 hours' ) ) {
-			return;
-		}
-
-		// Update time first before sending to ensure it is set.
-		update_option( 'elementor_tracker_last_send', time() );
-
-		$params = self::get_tracking_data( empty( $last_send ) );
-
-		// Tracking data is used for System Info reports, and events should not be included in System Info reports,
-		// so it is added here.
-		$params['analytics_events'] = self::get_events();
-
-		add_filter( 'https_ssl_verify', '__return_false' );
-
-		wp_safe_remote_post(
-			self::$api_url,
-			[
-				'timeout' => 25,
-				'blocking' => false,
-				'body' => [
-					'data' => wp_json_encode( $params ),
-				],
-			]
-		);
-
-		// After sending the event tracking data, we reset the events table.
-		Events_DB_Manager::reset_table();
+		// Tracking is permanently disabled for this fork. is_allow_track() above always
+		// returns false, so execution never reaches here, and the outbound POST to
+		// my.elementor.com has been removed entirely.
+		return;
 	}
 
 	/**

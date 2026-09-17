@@ -63,32 +63,14 @@ class Feedback extends Common_App {
 	}
 
 	public function submit( $body ) {
-		$is_active = Plugin::instance()->experiments->is_feature_active( self::EXPERIMENT_NAME );
-		if ( ! $is_active ) {
-			return [
-				'success' => false,
-				'data' => [
-					'message' => 'In-Editor Feedback is not active.',
-				],
-			];
-		}
-		$connect_info = $this->get_base_connect_info();
-		$merged_body = array_merge( $connect_info, $body );
-		$signature = $this->generate_signature( $merged_body );
-		$headers = [
-			'access-token' => $connect_info['access_token'],
-			'app' => 'library',
-			'client-id' => $connect_info['client_id'],
-			'endpoint' => 'taxonomies',
-			'home-url' => $connect_info['home_url'],
-			'local-id' => $connect_info['local_id'],
-			'site-key' => $this->get_site_key(),
-			'X-Elementor-Signature' => $signature,
+		// Outbound feedback POST to my.elementor.com/feedback/api/v1 removed for this
+		// fork. The calling module (modules/feedback) is not registered, and the
+		// in_editor_feedback experiment is hidden and default-inactive.
+		return [
+			'success' => false,
+			'data' => [
+				'message' => 'In-Editor Feedback is not active.',
+			],
 		];
-		$response = wp_remote_post( $this->get_api_url(), [
-			'headers' => $headers,
-			'body' => $body,
-		]);
-		return $response;
 	}
 }

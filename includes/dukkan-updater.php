@@ -51,6 +51,25 @@ class Dukkan_Updater {
 		add_filter( 'plugins_api', [ $this, 'plugin_details' ], 20, 3 );
 		add_filter( 'site_transient_update_plugins', [ $this, 'block_dotorg_package' ] );
 		add_action( 'upgrader_process_complete', [ $this, 'flush_cache' ], 10, 0 );
+		add_action( 'admin_init', [ $this, 'clear_legacy_tracker_cron' ] );
+	}
+
+	/**
+	 * One-time cleanup of the daily telemetry cron this fork removed.
+	 *
+	 * Sites activated before the tracker was disabled still carry an
+	 * `elementor/tracker/send_event` entry in their `cron` option. The schedule and
+	 * callback were removed, so the entry is inert, but this clears it from the database
+	 * once after upgrading. Guarded by an option so it runs exactly once per site.
+	 */
+	public function clear_legacy_tracker_cron() {
+		if ( get_option( 'elementor_dukkan_tracker_cron_cleared' ) ) {
+			return;
+		}
+
+		wp_clear_scheduled_hook( 'elementor/tracker/send_event' );
+
+		update_option( 'elementor_dukkan_tracker_cron_cleared', '1', false );
 	}
 
 	/**

@@ -129,21 +129,9 @@ class Module extends BaseModule {
 	}
 
 	public static function get_remote_kit_zip( $url, $file_name = 'kit.zip' ) {
-		$remote_zip_request = wp_safe_remote_get( $url, [
-			'timeout' => 300,
-		] );
-
-		if ( is_wp_error( $remote_zip_request ) ) {
-			Plugin::$instance->logger->get_logger()->error( $remote_zip_request->get_error_message() );
-			throw new \Error( ImportExportCustomization_Module::CLOUD_KIT_LIBRARY_ERROR_LOADING_RESOURCE ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-		}
-
-		if ( 200 !== $remote_zip_request['response']['code'] ) {
-			Plugin::$instance->logger->get_logger()->error( $remote_zip_request['response']['message'] );
-			throw new \Error( ImportExportCustomization_Module::CLOUD_KIT_LIBRARY_ERROR_LOADING_RESOURCE ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
-		}
-
-		return Plugin::$instance->uploads_manager->create_temp_file( $remote_zip_request['body'], $file_name );
+		// Cloud Kit Library remote download removed for this fork. The module is not
+		// registered, and its connect app's http_request() is disabled.
+		throw new \Error( ImportExportCustomization_Module::CLOUD_KIT_LIBRARY_ERROR_LOADING_RESOURCE ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 	}
 
 	public static function get_app(): Cloud_Kits {

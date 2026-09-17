@@ -369,47 +369,10 @@ class Server extends Base {
 	 * }
 	 */
 	public function get_elementor_library() {
-		$response = wp_remote_get(
-			Api::$api_info_url, [
-				'timeout' => 5,
-				'body' => [
-					// Which API version is used
-					'api_version' => ELEMENTOR_VERSION,
-					// Which language to return
-					'site_lang' => get_bloginfo( 'language' ),
-				],
-			]
-		);
-
-		if ( is_wp_error( $response ) ) {
-			return [
-				'value' => 'Not connected (' . $response->get_error_message() . ')',
-				'warning' => true,
-			];
-		}
-
-		$http_response_code = wp_remote_retrieve_response_code( $response );
-
-		if ( 200 !== (int) $http_response_code ) {
-			$error_msg = 'HTTP Error (' . $http_response_code . ')';
-
-			return [
-				'value' => 'Not connected (' . $error_msg . ')',
-				'warning' => true,
-			];
-		}
-
-		$info_data = json_decode( wp_remote_retrieve_body( $response ), true );
-
-		if ( empty( $info_data ) ) {
-			return [
-				'value' => 'Not connected (Returns invalid JSON)',
-				'warning' => true,
-			];
-		}
-
+		// Connectivity check removed for this fork — no outbound call to my.elementor.com.
 		return [
-			'value' => 'Connected',
+			'value' => 'Disabled (remote API removed)',
+			'warning' => false,
 		];
 	}
 

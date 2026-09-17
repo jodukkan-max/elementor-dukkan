@@ -45,24 +45,8 @@ class Beta_Testers {
 	 * @return string|false Beta version or false.
 	 */
 	private function get_beta_version() {
-		$beta_version = get_site_transient( $this->transient_key );
-
-		if ( false === $beta_version ) {
-			$beta_version = 'false';
-
-			$response = wp_remote_get( 'https://plugins.svn.wordpress.org/elementor/trunk/readme.txt' );
-
-			if ( ! is_wp_error( $response ) && ! empty( $response['body'] ) ) {
-				preg_match( '/Beta tag: (.*)/i', $response['body'], $matches );
-				if ( isset( $matches[1] ) ) {
-					$beta_version = $matches[1];
-				}
-			}
-
-			set_site_transient( $this->transient_key, $beta_version, 6 * HOUR_IN_SECONDS );
-		}
-
-		return $beta_version;
+		// Beta channel disabled for this fork; no remote readme fetch to wordpress.org.
+		return 'false';
 	}
 
 	/**

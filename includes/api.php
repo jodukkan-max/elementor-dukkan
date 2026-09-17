@@ -41,18 +41,6 @@ class Api {
 	 */
 	public static $api_info_url = 'https://my.elementor.com/api/v2/info/';
 
-	/**
-	 * API feedback URL.
-	 *
-	 * Holds the URL of the feedback API.
-	 *
-	 * @access private
-	 * @static
-	 *
-	 * @var string API feedback URL.
-	 */
-	private static $api_feedback_url = 'https://my.elementor.com/api/v1/feedback/';
-
 	private static $api_library_info_url = 'https://my.elementor.com/api/v1/templates/info/';
 
 	private static function get_info_data( $force_update = false, $additional_status = false ) {
@@ -223,15 +211,9 @@ class Api {
 	 * @return array The response of the request.
 	 */
 	public static function send_feedback( $feedback_key, $feedback_text ) {
-		return wp_remote_post( self::$api_feedback_url, [
-			'timeout' => 30,
-			'body' => [
-				'api_version' => ELEMENTOR_VERSION,
-				'site_lang' => get_bloginfo( 'language' ),
-				'feedback_key' => $feedback_key,
-				'feedback' => $feedback_text,
-			],
-		] );
+		// Outbound feedback POST to my.elementor.com/api/v1/feedback/ removed for this
+		// fork. The deactivation dialog's AJAX handler ignores the return value.
+		return new \WP_Error( 503, 'Remote connections disabled' );
 	}
 
 	/**

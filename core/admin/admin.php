@@ -372,12 +372,7 @@ class Admin extends App {
 
 		array_unshift( $links, $settings_link );
 
-		$go_pro_text = esc_html__( 'Get Elementor Pro', 'elementor' );
-		if ( Utils::is_sale_time() ) {
-			$go_pro_text = esc_html__( 'Discounted Upgrades Now!', 'elementor' );
-		}
-
-		$links['go_pro'] = sprintf( '<a href="%1$s" target="_blank" class="elementor-plugins-gopro">%2$s</a>', 'https://go.elementor.com/go-pro-wp-plugins/', $go_pro_text );
+		// The "Get Elementor Pro" upsell action link was removed for this fork.
 
 		return $links;
 	}

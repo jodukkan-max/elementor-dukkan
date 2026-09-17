@@ -302,24 +302,11 @@ class Migrations_Loader {
 	}
 
 	private function read_source( string $path ) {
-		if ( $this->is_url( $path ) ) {
-			$response = wp_remote_get( $path, [ 'timeout' => 3 ] );
-
-			if ( is_wp_error( $response ) ) {
-				return false;
-			}
-
-			return wp_remote_retrieve_body( $response );
-		}
-
+		// Remote URL fetch removed for this fork; only local files are read.
 		if ( ! file_exists( $path ) ) {
 			return false;
 		}
 
 		return file_get_contents( $path );
-	}
-
-	private function is_url( string $path ): bool {
-		return str_starts_with( $path, 'http://' ) || str_starts_with( $path, 'https://' );
 	}
 }

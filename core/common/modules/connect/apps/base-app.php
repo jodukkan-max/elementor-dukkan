@@ -451,80 +451,11 @@ abstract class Base_App {
 	 * @return mixed|\WP_Error
 	 */
 	protected function http_request( $method, $endpoint, $args = [], $options = [] ) {
-		// Returning early skips the wp_die() below, which would hard-stop the admin on a WP_Error.
+		// Outbound Elementor Connect request removed for this fork. Every connect app
+		// (library, kits, site builder, cloud library, feedback, AI, pro install) routes its
+		// network traffic through this single choke point, so returning early here disables
+		// them all without touching each caller.
 		return new \WP_Error( 503, 'Remote connections disabled' );
-
-		$options = wp_parse_args( $options, [
-			'return_type' => static::HTTP_RETURN_TYPE_OBJECT,
-		] );
-
-		$args = array_replace_recursive( [
-			'headers' => $this->is_connected() ? $this->generate_authentication_headers( $endpoint ) : [],
-			'method' => $method,
-			'timeout' => 10,
-		], $args );
-
-		$response = $this->http->request_with_fallback(
-			$this->get_generated_urls( $endpoint ),
-			$args
-		);
-
-		if ( is_wp_error( $response ) && empty( $options['with_error_data'] ) ) {
-			// PHPCS - the variable $response does not contain a user input value.
-			wp_die( $response, [ 'back_link' => true ] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		}
-
-		$body = wp_remote_retrieve_body( $response );
-		$response_code = (int) wp_remote_retrieve_response_code( $response );
-
-		if ( ! $response_code ) {
-			return new \WP_Error( 500, 'No Response' );
-		}
-
-		// Server sent a success message without content.
-		if ( 'null' === $body ) {
-			$body = true;
-		}
-
-		$body = json_decode( $body, static::HTTP_RETURN_TYPE_ARRAY === $options['return_type'] );
-
-		if ( false === $body ) {
-			return new \WP_Error( 422, 'Wrong Server Response' );
-		}
-
-		if ( 201 === $response_code ) {
-			return $body;
-		}
-
-		if ( 200 !== $response_code ) {
-			// In case $as_array = true.
-			$body = (object) $body;
-
-			$message = isset( $body->message ) ? $body->message : wp_remote_retrieve_response_message( $response );
-			$code = (int) ( isset( $body->code ) ? $body->code : $response_code );
-
-			if ( ! $code ) {
-				$code = $response_code;
-			}
-
-			if ( 401 === $code ) {
-				$this->delete();
-
-				$should_retry = ! in_array( $this->auth_mode, [ 'xhr', 'cli' ], true );
-
-				if ( $should_retry ) {
-					$this->action_authorize();
-				}
-			}
-
-			if ( isset( $options['with_error_data'] ) && true === $options['with_error_data'] ) {
-				return new \WP_Error( $code, $message, $body );
-			}
-
-			return new \WP_Error( $code, $message );
-		}
-
-		return $body;
 	}
 
 	/**

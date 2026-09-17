@@ -153,23 +153,9 @@ class Cloud_Kits extends Library {
 	}
 
 	public function upload_content_file( $upload_url, $content_file_data ) {
-		$upload_response = wp_remote_request( $upload_url, [
-			'method' => 'PUT',
-			'body' => $content_file_data,
-			'headers' => [
-				'Content-Type' => 'application/zip',
-				'Content-Length' => strlen( $content_file_data ),
-			],
-			'timeout' => 120,
-		] );
-
-		if ( is_wp_error( $upload_response ) ) {
-			return false;
-		}
-
-		$response_code = wp_remote_retrieve_response_code( $upload_response );
-
-		return $response_code >= 200 && $response_code < 300;
+		// Outbound content upload removed for this fork. Only reachable after
+		// create_kit() succeeds, which requires http_request() — already disabled.
+		return false;
 	}
 
 	public function get_kit( array $args ) {

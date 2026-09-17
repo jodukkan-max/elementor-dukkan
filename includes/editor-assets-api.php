@@ -40,19 +40,9 @@ class EditorAssetsAPI {
 	}
 
 	private function fetch_data(): array {
-		$response = wp_remote_get( $this->config( static::ASSETS_DATA_URL ) );
-
-		if ( is_wp_error( $response ) || \WP_Http::OK !== (int) wp_remote_retrieve_response_code( $response ) ) {
-			return [];
-		}
-
-		$data = json_decode( wp_remote_retrieve_body( $response ), true );
-
-		if ( ! $this->has_valid_data( $data ) ) {
-			return [];
-		}
-
-		return $data[ $this->config( static::ASSETS_DATA_KEY ) ];
+		// Remote asset-data fetch removed for this fork. All consumers (home screen,
+		// mixpanel config, apps page, onboarding) are gated or removed from the registry.
+		return [];
 	}
 
 	private function get_transient( $cache_key ) {

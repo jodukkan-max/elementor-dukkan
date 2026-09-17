@@ -19,8 +19,6 @@ class Module extends BaseModule {
 
 	const EXPERIMENT_NAME = 'editor_events';
 
-	const REMOTE_MIXPANEL_CONFIG_URL = 'https://assets.elementor.com/mixpanel/v1/mixpanel.json';
-
 	public function get_name() {
 		return 'events-manager';
 	}
@@ -114,13 +112,9 @@ class Module extends BaseModule {
 	}
 
 	private static function get_remote_mixpanel_config() {
-		$editor_assets_api = new EditorAssetsAPI( [
-			EditorAssetsAPI::ASSETS_DATA_URL => static::REMOTE_MIXPANEL_CONFIG_URL,
-			EditorAssetsAPI::ASSETS_DATA_TRANSIENT_KEY => '_elementor_mixpanel_config',
-			EditorAssetsAPI::ASSETS_DATA_KEY => 'mixpanel',
-		] );
-
-		return $editor_assets_api->get_assets_data();
+		// Mixpanel config fetch removed for this fork. Only reachable when
+		// Tracker::is_allow_track() is true, which is permanently false.
+		return [];
 	}
 
 	private static function get_session_recording_events(): array {

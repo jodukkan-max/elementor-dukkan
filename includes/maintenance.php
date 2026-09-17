@@ -31,9 +31,6 @@ class Maintenance {
 	 * @static
 	 */
 	public static function activation( $network_wide ) {
-		wp_clear_scheduled_hook( 'elementor/tracker/send_event' );
-
-		wp_schedule_event( time(), 'daily', 'elementor/tracker/send_event' );
 		flush_rewrite_rules();
 
 		if ( is_multisite() && $network_wide ) {
@@ -82,8 +79,6 @@ class Maintenance {
 	 * @static
 	 */
 	public static function uninstall() {
-		wp_clear_scheduled_hook( 'elementor/tracker/send_event' );
-
 		Api::get_uninstalled_data();
 	}
 
